@@ -1,5 +1,6 @@
-// Подтягиваем Address из @ton/core (ESM с CDN)
-import { Address } from "https://cdn.jsdelivr.net/npm/@ton/core@0.57.0/dist/index.min.js";
+// корректная ESM-сборка для браузера
+import { Address } from "https://esm.sh/@ton/core@0.57.0?bundle";
+
 
 const API_BASE = "https://tonapi.io/v2";
 const MASTER = window.GRAM_MASTER;
