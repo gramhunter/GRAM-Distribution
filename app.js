@@ -147,39 +147,47 @@ async function loadMeta() {
 }
 
 async function loadStats() {
+  // Берём первую страницу (1000) — из неё возьмём топ-10/100/1000,
+  // а общее число холдеров заберём из поля total / total_count и т.п.
   const data = await tonFetch(`/jettons/${MASTER}/holders?limit=1000&offset=0`);
+
   const list = data.holders || data.addresses || data.items || [];
+  // Общее число холдеров напрямую из API (fallback'и на разные названия полей)
+  const totalHolders =
+    data.total ??
+    data.total_count ??
+    data.count ??
+    data.totalItems ??
+    data.total_items ??
+    list.length;
 
   // Сортировка по балансу (DESC) без смешивания BigInt с Number
   list.sort((a, b) => {
     const balA = BigInt(a.balance ?? a.amount ?? a.jetton_balance ?? 0);
     const balB = BigInt(b.balance ?? b.amount ?? b.jetton_balance ?? 0);
     if (balA === balB) return 0;
-    return balA > balB ? -1 : 1; // Number-результат
+    return balA > balB ? -1 : 1;
   });
 
-  let total10 = 0n, total100 = 0n, total1000 = 0n, addrCount = 0;
-
-  const oneGram = 1n * (10n ** BigInt(decimals));
+  let total10 = 0n, total100 = 0n, total1000 = 0n;
 
   list.forEach((it, i) => {
     const bal = BigInt(it.balance ?? it.amount ?? it.jetton_balance ?? 0);
-    if (bal >= oneGram) addrCount++;
     if (i < 10)   total10  += bal;
     if (i < 100)  total100 += bal;
     if (i < 1000) total1000+= bal;
   });
 
-  // Безопасные функции процентов
   const pctStr = (x) => (totalSupply === 0n)
     ? '—'
     : (Number((x * 100000n) / totalSupply) / 1000).toFixed(3) + '%';
 
   const pctNum = (x) => (totalSupply === 0n)
     ? 0
-    : Number((x * 10000n) / totalSupply) / 100; // 2 знака, для ширины бара
+    : Number((x * 10000n) / totalSupply) / 100; // 2 знака — для width%
 
-  q("#statAddresses").textContent = addrCount.toLocaleString();
+  // Карточки
+  q("#statAddresses").textContent = Number(totalHolders).toLocaleString();
   q("#statTop10").textContent     = pctStr(total10);
   q("#statTop100").textContent    = pctStr(total100);
   q("#statTop1000").textContent   = pctStr(total1000);
@@ -188,6 +196,7 @@ async function loadStats() {
   q("#barTop100").style.width  = Math.min(100, pctNum(total100)) + "%";
   q("#barTop1000").style.width = Math.min(100, pctNum(total1000)) + "%";
 }
+
 
 
 async function loadHolders() {
