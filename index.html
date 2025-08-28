@@ -8,88 +8,104 @@
   <meta name="description" content="Top addresses (holders) for GRAM jetton on TON, via TonAPI. Optional token for faster rate limits." />
 </head>
 <body>
-  <header>
-    <section id="stats" class="stats">
-  <div class="stat-card">
-    <div class="stat-title">Total Holders</div>
-    <div class="stat-value" id="statAddresses">—</div>
-    <div class="stat-label">Addresses with ≥ 1 GRAM</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-title">Top 10 Addresses Own</div>
-    <div class="stat-value" id="statTop10">—</div>
-    <div class="stat-label">% of circulating supply</div>
-    <div class="bar"><div id="barTop10"></div></div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-title">Top 100 Addresses Own</div>
-    <div class="stat-value" id="statTop100">—</div>
-    <div class="stat-label">% of circulating supply</div>
-    <div class="bar"><div id="barTop100"></div></div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-title">Top 1000 Addresses Own</div>
-    <div class="stat-value" id="statTop1000">—</div>
-    <div class="stat-label">% of circulating supply</div>
-    <div class="bar"><div id="barTop1000"></div></div>
-  </div>
-</section>
+  <!-- Topbar -->
+  <nav class="topbar">
+    <div class="container">
+      <div class="topbar-left">
+        <a class="brand" href="#">GRAMboard</a>
+        <a class="navlink" href="#">Dashboard</a>
+        <a class="navlink" href="#">Tokens</a>
+        <a class="navlink active" href="#">Top Addresses</a>
+        <a class="navlink" href="https://docs.tonconsole.com/" target="_blank" rel="noopener">API Docs</a>
+      </div>
+      <div class="topbar-right">
+        <span class="price-badge" id="priceBadge">$—</span>
+      </div>
+    </div>
+  </nav>
 
-    <h1>Top Addresses — GRAM</h1>
+  <div class="container">
+    <header>
+      <h1>Top Addresses — GRAM</h1>
 
-    <div class="controls">
-      <label>Показать топ:
-        <select id="limit">
-          <option>25</option><option selected>50</option><option>100</option><option>250</option>
-        </select>
-      </label>
-      <input id="search" placeholder="Фильтр по адресу…" />
-      <button id="reload">Обновить</button>
+      <div class="controls">
+        <label>Показать топ:
+          <select id="limit">
+            <option>25</option><option selected>50</option><option>100</option><option>250</option>
+          </select>
+        </label>
+        <button id="reload">Обновить</button>
 
-      <!-- Блок токена -->
-      <div class="token-box">
-        <input id="token" type="text" placeholder="TONAPI токен (необязательно)" autocomplete="off" />
-        <button id="saveToken">Сохранить</button>
-        <button id="clearToken" class="ghost">Очистить</button>
-        <span id="authBadge" class="badge">Auth: none</span>
+        <!-- Блок токена -->
+        <div class="token-box">
+          <input id="token" type="text" placeholder="TONAPI токен (необязательно)" autocomplete="off" />
+          <button id="saveToken">Сохранить</button>
+          <button id="clearToken" class="ghost">Очистить</button>
+          <span id="authBadge" class="badge">Auth: none</span>
+        </div>
       </div>
 
-    </div>
+      <div id="meta" class="meta"></div>
+    </header>
 
-    <div id="meta" class="meta"></div>
-  </header>
+    <!-- KPI-карточки -->
+    <section id="stats" class="stats">
+      <div class="stat-card">
+        <div class="stat-value" id="statAddresses">—</div>
+        <div class="stat-label">Addresses with GRAM (&gt; 0)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Top 10 Addresses Own</div>
+        <div class="stat-value" id="statTop10">—</div>
+        <div class="stat-label">% of circulating supply</div>
+        <div class="bar"><div id="barTop10"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Top 100 Addresses Own</div>
+        <div class="stat-value" id="statTop100">—</div>
+        <div class="stat-label">% of circulating supply</div>
+        <div class="bar"><div id="barTop100"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Top 1000 Addresses Own</div>
+        <div class="stat-value" id="statTop1000">—</div>
+        <div class="stat-label">% of circulating supply</div>
+        <div class="bar"><div id="barTop1000"></div></div>
+      </div>
+    </section>
 
-  <main>
-    <table id="tbl">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Адрес</th>
-          <th class="num">Баланс (GRAM)</th>
-          <th class="num">% от саплая</th>
-        </tr>
-      </thead>
-      <tbody id="rows">
-        <tr><td colspan="4" class="muted">Загрузка…</td></tr>
-      </tbody>
-    </table>
+    <main>
+              <table id="tbl">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Адрес</th>
+              <th>Tags</th>
+              <th class="num">Баланс (GRAM)</th>
+              <th class="num">% от саплая</th>
+            </tr>
+          </thead>
+          <tbody id="rows">
+            <tr><td colspan="5" class="muted">Загрузка…</td></tr>
+          </tbody>
+        </table>
 
-    <div class="pager">
-      <button id="prev">Назад</button>
-      <span id="pageinfo"></span>
-      <button id="next">Вперёд</button>
-    </div>
-  </main>
+      <div class="pager">
+        <button id="prev">Назад</button>
+        <span id="pageinfo"></span>
+        <button id="next">Вперёд</button>
+      </div>
+    </main>
 
-  <footer>
-    <small>
-      Данные: TonAPI • GRAM jetton master: EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O •
-      Без токена лимит 1 запрос / 4 с. С токеном — быстрее (по лимитам TonAPI).
-    </small>
-  </footer>
+    <footer>
+      <small>
+        Данные: TonAPI • GRAM jetton master: EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O •
+        Без токена лимит 1 запрос / 4 с. С токеном — быстрее (по лимитам TonAPI). Цена: CoinGecko (gram-2).
+      </small>
+    </footer>
+  </div>
 
   <script>
-    // Jetton master GRAM в TON
     window.GRAM_MASTER = "EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O";
   </script>
   <script type="module" src="./app.js"></script>
