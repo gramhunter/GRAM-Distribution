@@ -1,3 +1,6 @@
+// Подтягиваем Address из @ton/core (ESM с CDN)
+import { Address } from "https://cdn.jsdelivr.net/npm/@ton/core@0.57.0/dist/index.min.js";
+
 const API_BASE = "https://tonapi.io/v2";
 const MASTER = window.GRAM_MASTER;
 
@@ -31,6 +34,20 @@ function pct(intLike) {
     const n = (BigInt(intLike) * 100000n) / totalSupply; // тысячные доли процента
     return (Number(n) / 1000).toFixed(3) + '%';
   } catch { return '—'; }
+}
+
+// ----- helper: дружелюбный non-bounceable адрес -----
+function toFriendlyNonBounceable(rawOrFriendly) {
+  try {
+    // Address.parse распознаёт и raw ("0:...") и уже friendly.
+    return Address.parse(rawOrFriendly).toString({
+      bounceable: false,
+      urlSafe: true,   // заменяет +/ на -_ и убирает =
+      // testOnly: false // по умолчанию false; можно явно указать, если нужно
+    });
+  } catch {
+    return rawOrFriendly; // если вдруг не распарсился — показываем как есть
+  }
 }
 
 // ----- троттлинг TonAPI: ≥ 4 c между запросами -----
@@ -90,8 +107,9 @@ async function loadHolders() {
   const needle = searchEl.value.trim().toLowerCase();
 
   const filtered = list.filter(it => {
-    const addr = (it.owner?.address || it.address || it.account?.address || it.wallet_address || '').toLowerCase();
-    return !needle || addr.includes(needle);
+    const raw = it.owner?.address || it.address || it.account?.address || it.wallet_address || '';
+    // Фильтруем по raw и по friendly (на всякий случай)
+    return !needle || raw.toLowerCase().includes(needle) || toFriendlyNonBounceable(raw).toLowerCase().includes(needle);
   });
 
   if (!filtered.length) {
@@ -99,7 +117,8 @@ async function loadHolders() {
   } else {
     rowsEl.innerHTML = filtered.map((it, i) => {
       const rank = offset + i + 1;
-      const addr = it.owner?.address || it.address || it.account?.address || it.wallet_address || '—';
+      const raw  = it.owner?.address || it.address || it.account?.address || it.wallet_address || '—';
+      const addr = toFriendlyNonBounceable(raw);
       const bal  = it.balance ?? it.amount ?? it.jetton_balance ?? 0;
       return `
         <tr>
