@@ -54,10 +54,8 @@ function initTokenUI() {
     setStoredToken('');
     updateAuthUI();
   };
-  toggleTokenBtn.onclick = () => {
-    tokenInput.type = tokenInput.type === 'password' ? 'text' : 'password';
-  };
 }
+
 
 // ===== форматирование =====
 function fmtGram(intLike) {
