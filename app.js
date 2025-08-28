@@ -146,6 +146,37 @@ async function loadMeta() {
   `;
 }
 
+async function loadStats() {
+  // берём первые 1000 холдеров
+  const data = await tonFetch(`/jettons/${MASTER}/holders?limit=1000&offset=0`);
+  const list = data.holders || data.addresses || data.items || [];
+
+  // сортируем по балансу
+  list.sort((a,b)=> BigInt(b.balance||0n) - BigInt(a.balance||0n));
+
+  let total10=0n, total100=0n, total1000=0n, addrCount=0;
+
+  list.forEach((it,i)=>{
+    const bal = BigInt(it.balance || 0);
+    if (bal >= 1n * (10n**BigInt(decimals))) addrCount++;
+    if (i<10) total10 += bal;
+    if (i<100) total100 += bal;
+    if (i<1000) total1000 += bal;
+  });
+
+  function fmtPct(x){ return (Number(x*10000n/totalSupply)/100).toFixed(3)+"%"; }
+  function barPct(x){ return Number(x*10000n/totalSupply)/100; }
+
+  q("#statAddresses").textContent = addrCount.toLocaleString();
+  q("#statTop10").textContent   = fmtPct(total10);
+  q("#statTop100").textContent  = fmtPct(total100);
+  q("#statTop1000").textContent = fmtPct(total1000);
+
+  q("#barTop10").style.width   = barPct(total10)+"%";
+  q("#barTop100").style.width  = barPct(total100)+"%";
+  q("#barTop1000").style.width = barPct(total1000)+"%";
+}
+
 async function loadHolders() {
   const limit = Number(limitSel.value);
   const offset = page * limit;
@@ -203,12 +234,14 @@ async function boot() {
   try {
     updateAuthUI();
     await loadMeta();
+    await loadStats();   // <-- новая строка
     await loadHolders();
   } catch (e) {
     rowsEl.innerHTML = `<tr><td colspan="4" class="error">Ошибка: ${e.message}</td></tr>`;
     console.error(e);
   }
 }
+
 
 reloadBt.onclick = () => { page = 0; boot(); };
 limitSel.onchange = () => { page = 0; boot(); };
