@@ -1,4 +1,4 @@
-:root { --bg:#0b0d12; --fg:#e7ecf3; --muted:#99a3b3; --card:#151924; --accent:#66d9ef; }
+:root { --bg:#0b0d12; --fg:#e7ecf3; --muted:#99a3b3; --card:#151924; --accent:#66d9ef; --ok:#3ecf8e; --warn:#f39c12; }
 *{box-sizing:border-box}
 body{margin:0;font:14px/1.5 system-ui,Segoe UI,Roboto; background:var(--bg); color:var(--fg)}
 header{padding:16px 20px;border-bottom:1px solid #1f2430;background:var(--card)}
@@ -8,7 +8,14 @@ h1{margin:0 0 8px 0;font-size:20px}
   background:#0f1320;color:var(--fg);border:1px solid #242b3a;border-radius:8px;padding:8px 10px
 }
 .controls button{cursor:pointer}
+.controls .ghost{background:transparent;border-color:#2b3346}
+.token-box{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.token-box input{min-width:260px}
+.badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid #2b3346;color:var(--muted)}
+.badge.ok{border-color:#295f46;color:var(--ok)}
+.badge.warn{border-color:#5f4b29;color:var(--warn)}
 .meta{margin-top:8px;color:var(--muted)}
+
 main{padding:16px 20px}
 table{width:100%;border-collapse:separate;border-spacing:0 8px}
 thead th{font-weight:600;text-align:left;color:var(--muted);padding:6px 10px}
