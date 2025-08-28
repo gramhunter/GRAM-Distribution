@@ -1,7 +1,6 @@
 // корректная ESM-сборка для браузера
 import { Address } from "https://esm.sh/@ton/core@0.57.0?bundle";
 
-
 const API_BASE = "https://tonapi.io/v2";
 const MASTER = window.GRAM_MASTER;
 
@@ -15,11 +14,52 @@ const prevBt   = q('#prev');
 const nextBt   = q('#next');
 const pageInfo = q('#pageinfo');
 
+// элементы токена
+const tokenInput   = q('#token');
+const saveTokenBtn = q('#saveToken');
+const clearTokenBtn= q('#clearToken');
+const toggleTokenBtn = q('#toggleToken');
+const authBadge    = q('#authBadge');
+
 let decimals = 9;
 let totalSupply = 0n;
 let page = 0;
 
-// ----- форматирование -----
+// ===== токен и статус =====
+function getStoredToken() {
+  try { return localStorage.getItem('tonapi_token') || ''; } catch { return ''; }
+}
+function setStoredToken(v) {
+  try {
+    if (v) localStorage.setItem('tonapi_token', v);
+    else localStorage.removeItem('tonapi_token');
+  } catch {}
+}
+function updateAuthUI() {
+  const has = !!getStoredToken();
+  authBadge.textContent = has ? 'Auth: token' : 'Auth: none';
+  authBadge.classList.toggle('ok', has);
+  authBadge.classList.toggle('warn', !has);
+}
+function initTokenUI() {
+  tokenInput.value = getStoredToken();
+  updateAuthUI();
+
+  saveTokenBtn.onclick = () => {
+    setStoredToken(tokenInput.value.trim());
+    updateAuthUI();
+  };
+  clearTokenBtn.onclick = () => {
+    tokenInput.value = '';
+    setStoredToken('');
+    updateAuthUI();
+  };
+  toggleTokenBtn.onclick = () => {
+    tokenInput.type = tokenInput.type === 'password' ? 'text' : 'password';
+  };
+}
+
+// ===== форматирование =====
 function fmtGram(intLike) {
   try {
     const n = BigInt(intLike);
@@ -36,33 +76,33 @@ function pct(intLike) {
     return (Number(n) / 1000).toFixed(3) + '%';
   } catch { return '—'; }
 }
-
-// ----- helper: дружелюбный non-bounceable адрес -----
 function toFriendlyNonBounceable(rawOrFriendly) {
   try {
-    // Address.parse распознаёт и raw ("0:...") и уже friendly.
     return Address.parse(rawOrFriendly).toString({
       bounceable: false,
-      urlSafe: true,   // заменяет +/ на -_ и убирает =
-      // testOnly: false // по умолчанию false; можно явно указать, если нужно
+      urlSafe: true,
     });
   } catch {
-    return rawOrFriendly; // если вдруг не распарсился — показываем как есть
+    return rawOrFriendly;
   }
 }
 
-// ----- троттлинг TonAPI: ≥ 4 c между запросами -----
+// ===== троттлинг =====
+// Без токена — ≥ 4000 ms. С токеном — делаем мягче (например, 500 ms).
 let lastCall = 0;
-const MIN_GAP_MS = 4000;
+function minGapMs() {
+  return getStoredToken() ? 500 : 4000;
+}
 
 async function throttledFetch(url, options = {}) {
   const now = Date.now();
-  const wait = Math.max(0, MIN_GAP_MS - (now - lastCall));
+  const wait = Math.max(0, minGapMs() - (now - lastCall));
   if (wait) await new Promise(r => setTimeout(r, wait));
   lastCall = Date.now();
 
   let res = await fetch(url, options);
   if (res.status === 429) {
+    // Если всё-таки словили rate-limit — уважаем Retry-After или ждём 4с
     const retryAfter = Number(res.headers.get("retry-after")) || 4;
     await new Promise(r => setTimeout(r, retryAfter * 1000));
     lastCall = Date.now();
@@ -72,12 +112,25 @@ async function throttledFetch(url, options = {}) {
 }
 
 async function tonFetch(path) {
-  const res = await throttledFetch(`${API_BASE}${path}`);
+  const token = getStoredToken();
+  const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+  const res = await throttledFetch(`${API_BASE}${path}`, { headers });
+
+  // Если токен неверный (401/403), автоматически переключаемся на «без токена»
+  if (res.status === 401 || res.status === 403) {
+    setStoredToken('');
+    updateAuthUI();
+    // повтор без токена
+    const res2 = await throttledFetch(`${API_BASE}${path}`, {});
+    if (!res2.ok) throw new Error(`TonAPI error ${res2.status}`);
+    return res2.json();
+  }
+
   if (!res.ok) throw new Error(`TonAPI error ${res.status}`);
   return res.json();
 }
 
-// ----- загрузка метаданных -----
+// ===== загрузка данных =====
 async function loadMeta() {
   const info = await tonFetch(`/jettons/${MASTER}`);
   const meta = info?.metadata || info?.jetton || info || {};
@@ -90,12 +143,11 @@ async function loadMeta() {
   const symbol = meta.symbol ?? 'GRAM';
 
   metaEl.innerHTML = `
-    <div><b>${name} (${symbol})</b> • decimals: ${decimals}</div>
+    <div><b>${name} (${symbol})</b> • decimals: ${decimals} • <span class="badge ${getStoredToken() ? 'ok' : 'warn'}">${getStoredToken() ? 'faster (token)' : 'slow (no token)'}</span></div>
     <div>Общий саплай: <b>${fmtGram(totalSupply)}</b> ${symbol}</div>
   `;
 }
 
-// ----- загрузка холдеров -----
 async function loadHolders() {
   const limit = Number(limitSel.value);
   const offset = page * limit;
@@ -103,14 +155,13 @@ async function loadHolders() {
   rowsEl.innerHTML = `<tr><td colspan="4" class="muted">Загрузка…</td></tr>`;
 
   const data = await tonFetch(`/jettons/${MASTER}/holders?limit=${limit}&offset=${offset}`);
-
   const list = data.holders || data.addresses || data.items || data || [];
   const needle = searchEl.value.trim().toLowerCase();
 
   const filtered = list.filter(it => {
     const raw = it.owner?.address || it.address || it.account?.address || it.wallet_address || '';
-    // Фильтруем по raw и по friendly (на всякий случай)
-    return !needle || raw.toLowerCase().includes(needle) || toFriendlyNonBounceable(raw).toLowerCase().includes(needle);
+    const friendly = toFriendlyNonBounceable(raw);
+    return !needle || raw.toLowerCase().includes(needle) || friendly.toLowerCase().includes(needle);
   });
 
   if (!filtered.length) {
@@ -149,12 +200,15 @@ async function loadHolders() {
   });
 }
 
+// ===== bootstrap =====
 async function boot() {
   try {
+    updateAuthUI();
     await loadMeta();
     await loadHolders();
   } catch (e) {
     rowsEl.innerHTML = `<tr><td colspan="4" class="error">Ошибка: ${e.message}</td></tr>`;
+    console.error(e);
   }
 }
 
@@ -164,4 +218,5 @@ searchEl.oninput = () => { loadHolders(); };
 prevBt.onclick = () => { if (page>0) { page--; boot(); } };
 nextBt.onclick = () => { page++; boot(); };
 
+initTokenUI();
 boot();
