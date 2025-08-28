@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>GRAM Top Addresses</title>
   <link rel="stylesheet" href="./styles.css" />
-  <meta name="description" content="Top addresses (holders) for GRAM jetton on TON, via TonAPI (no token)." />
+  <meta name="description" content="Top addresses (holders) for GRAM jetton on TON, via TonAPI. Optional token for faster rate limits." />
 </head>
 <body>
   <header>
     <h1>Top Addresses — GRAM</h1>
+
     <div class="controls">
       <label>Показать топ:
         <select id="limit">
@@ -18,7 +19,17 @@
       </label>
       <input id="search" placeholder="Фильтр по адресу…" />
       <button id="reload">Обновить</button>
+
+      <!-- Блок токена -->
+      <div class="token-box">
+        <input id="token" type="password" placeholder="TONAPI токен (необязательно)" autocomplete="off" />
+        <button id="toggleToken" title="Показать/скрыть токен">👁</button>
+        <button id="saveToken">Сохранить</button>
+        <button id="clearToken" class="ghost">Очистить</button>
+        <span id="authBadge" class="badge">Auth: none</span>
+      </div>
     </div>
+
     <div id="meta" class="meta"></div>
   </header>
 
@@ -47,7 +58,7 @@
   <footer>
     <small>
       Данные: TonAPI • GRAM jetton master: EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O •
-      Без токена (лимит 1 запрос / 4 с)
+      Без токена лимит 1 запрос / 4 с. С токеном — быстрее (по лимитам TonAPI).
     </small>
   </footer>
 
