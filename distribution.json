@@ -1,5 +1,5 @@
 {
-  "generated_at": "2025-08-30T16:00:00Z",
+  "generated_at": "2025-08-30T17:00:00Z",
   "decimals": 9,
   "supply": "",
   "buckets": [
@@ -9,9 +9,9 @@
       "label": "Crab",
       "range_label": "[100 - 1K]",
       "count": 20042,
-      "sum": "7539649730000000",
+      "sum": "7538901290000000",
       "delta_count": {
-        "1h": -1,
+        "1h": 0,
         "24h": 1,
         "7d": null,
         "30d": null,
@@ -24,9 +24,9 @@
       "label": "Octopus",
       "range_label": "[1K - 10K]",
       "count": 13138,
-      "sum": "45279673230000000",
+      "sum": "45278765450000000",
       "delta_count": {
-        "1h": 1,
+        "1h": 0,
         "24h": 1,
         "7d": null,
         "30d": null,
@@ -38,11 +38,11 @@
       "emoji": "🐟",
       "label": "Fish",
       "range_label": "[10K - 100K]",
-      "count": 5378,
-      "sum": "170959611360000000",
+      "count": 5376,
+      "sum": "170904855430000000",
       "delta_count": {
-        "1h": 0,
-        "24h": -4,
+        "1h": -2,
+        "24h": -6,
         "7d": null,
         "30d": null,
         "90d": null
@@ -69,7 +69,7 @@
       "label": "Shark",
       "range_label": "[1M - 10M]",
       "count": 317,
-      "sum": "940344466010000000",
+      "sum": "940245699470000000",
       "delta_count": {
         "1h": 0,
         "24h": 1,
@@ -84,7 +84,7 @@
       "label": "Whale",
       "range_label": "[10M - 100M]",
       "count": 21,
-      "sum": "452169638660000000",
+      "sum": "452324817350000000",
       "delta_count": {
         "1h": 0,
         "24h": 0,
@@ -95,7 +95,7 @@
     },
     {
       "key": "humpback",
-      "emoji": "🐋",
+      "emoji": "🐳",
       "label": "Humpback",
       "range_label": "[100M - 1B]",
       "count": 2,
