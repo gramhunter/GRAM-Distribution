@@ -49,6 +49,15 @@ tbody tr:hover{outline:1px solid #263049}
 .num{text-align:right;font-variant-numeric:tabular-nums}
 .muted{color:var(--muted);text-align:center}
 .error{color:#ff8a80;text-align:center}
+
+/* USD badge styling */
+.usd-badge {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
+  font-weight: normal;
+}
 .pager{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:12px}
 footer{padding:16px 0;color:var(--muted);border-top:1px solid #1f2430}
 .stats {
@@ -94,6 +103,191 @@ footer{padding:16px 0;color:var(--muted);border-top:1px solid #1f2430}
 .price-badge{background:#0f1320; border:1px solid #2b3346; border-radius:999px; padding:6px 10px; font-weight:600}
 
 
+
+/* Distribution Table Styles */
+.distribution-section {
+  margin: 24px 0;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #1f2430;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--fg);
+}
+
+.last-updated {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.toggle-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+.distribution-table-container {
+  overflow-x: auto;
+}
+
+.distribution-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+}
+
+.distribution-table th {
+  background: #0f1320;
+  color: var(--muted);
+  font-weight: 600;
+  padding: 12px 8px;
+  text-align: left;
+  border-bottom: 1px solid #1f2430;
+  white-space: nowrap;
+}
+
+.distribution-table td {
+  padding: 12px 8px;
+  border-bottom: 1px solid #1f2430;
+  vertical-align: middle;
+}
+
+.distribution-table tbody tr:hover {
+  background: rgba(102, 217, 239, 0.05);
+}
+
+.category-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.category-emoji {
+  font-size: 16px;
+}
+
+.category-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.category-name {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.category-range {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.balance-range {
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.count-cell {
+  font-weight: 600;
+  color: var(--fg);
+  text-align: center;
+}
+
+.delta-cell {
+  text-align: center;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.delta-positive {
+  color: #3ecf8e;
+}
+
+.delta-negative {
+  color: #ff8a80;
+}
+
+.delta-neutral {
+  color: var(--muted);
+}
+
+.total-balance-cell {
+  text-align: right;
+  font-weight: 500;
+}
+
+.balance-amount {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.balance-usd {
+  color: var(--muted);
+  font-size: 11px;
+  display: block;
+  margin-top: 2px;
+}
+
+.percentage-cell {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .distribution-table th,
+  .distribution-table td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+  
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .distribution-section {
+    padding: 16px;
+  }
+  
+  .distribution-table-container {
+    font-size: 11px;
+  }
+}
 
 /* Tags styling */
 .tag {
