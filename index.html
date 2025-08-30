@@ -74,8 +74,40 @@
       </div>
     </section>
 
+    <!-- Таблица распределения кошельков по категориям -->
+    <section id="distribution-section" class="distribution-section">
+      <div class="section-header">
+        <h2>Address Distribution</h2>
+        <div class="last-updated" id="lastUpdated">Last updated: —</div>
+        
+      </div>
+      
+      <div class="distribution-table-container">
+        <table id="distributionTable" class="distribution-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Balance</th>
+              <th>Count</th>
+              <th>1h</th>
+              <th>24h</th>
+              <th>7d</th>
+              <th>30d</th>
+              <th>90d</th>
+              <th>Total Balance</th>
+              <th>% of Supply</th>
+            </tr>
+          </thead>
+          <tbody id="distributionRows">
+            <tr><td colspan="9" class="muted">Загрузка данных распределения…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
     <main>
-              <table id="tbl">
+      <div class="table-wrapper">
+        <table id="tbl">
           <thead>
             <tr>
               <th>#</th>
@@ -89,6 +121,7 @@
             <tr><td colspan="5" class="muted">Загрузка…</td></tr>
           </tbody>
         </table>
+      </div>
 
       <div class="pager">
         <button id="prev">Назад</button>
