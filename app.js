@@ -12,11 +12,7 @@ const prevBt   = q('#prev');
 const nextBt   = q('#next');
 const pageInfo = q('#pageinfo');
 
-// token UI
-const tokenInput   = q('#token');
-const saveTokenBtn = q('#saveToken');
-const clearTokenBtn= q('#clearToken');
-const authBadge    = q('#authBadge');
+
 
 // price UI
 const priceBadge = q('#priceBadge');
@@ -27,25 +23,7 @@ let page = 0;
 let priceUSD = null;        // текущая цена GRAM из CoinGecko (usd)
 let tagMap = new Map();     // address -> tag
 
-// ===== token helpers =====
-function getStoredToken() {
-  try { return localStorage.getItem('tonapi_token') || ''; } catch { return ''; }
-}
-function setStoredToken(v) {
-  try { v ? localStorage.setItem('tonapi_token', v) : localStorage.removeItem('tonapi_token'); } catch {}
-}
-function updateAuthUI() {
-  const has = !!getStoredToken();
-  authBadge.textContent = has ? 'Auth: token' : 'Auth: none';
-  authBadge.classList.toggle('ok', has);
-  authBadge.classList.toggle('warn', !has);
-}
-function initTokenUI() {
-  tokenInput.value = getStoredToken();
-  updateAuthUI();
-  saveTokenBtn.onclick = () => { setStoredToken(tokenInput.value.trim()); updateAuthUI(); };
-  clearTokenBtn.onclick = () => { tokenInput.value=''; setStoredToken(''); updateAuthUI(); };
-}
+
 
 // ===== formatters =====
 function shortenAddress(address, startLength = 6, endLength = 4) {
@@ -145,7 +123,7 @@ function fmtUSD(n) {
 
 // ===== throttling for TonAPI =====
 let lastCall = 0;
-function minGapMs() { return getStoredToken() ? 500 : 4000; }
+function minGapMs() { return 4000; } // Фиксированный интервал 4 секунды без токена
 async function throttledFetch(url, options = {}) {
   const now = Date.now();
   const wait = Math.max(0, minGapMs() - (now - lastCall));
@@ -163,15 +141,7 @@ async function throttledFetch(url, options = {}) {
 }
 
 async function tonFetch(path) {
-  const token = getStoredToken();
-  const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
-  const res = await throttledFetch(`${API_BASE}${path}`, { headers });
-  if (res.status === 401 || res.status === 403) {
-    setStoredToken(''); updateAuthUI();
-    const res2 = await throttledFetch(`${API_BASE}${path}`, {});
-    if (!res2.ok) throw new Error(`TonAPI error ${res2.status}`);
-    return res2.json();
-  }
+  const res = await throttledFetch(`${API_BASE}${path}`, {});
   if (!res.ok) throw new Error(`TonAPI error ${res.status}`);
   return res.json();
 }
@@ -187,11 +157,7 @@ async function loadMeta() {
   const symbol = meta.symbol ?? 'GRAM';
 
   metaEl.innerHTML = `
-    <div><b>${name} (${symbol})</b> • decimals: ${decimals} •
-      <span class="badge ${getStoredToken() ? 'ok' : 'warn'}">
-        ${getStoredToken() ? 'faster (token)' : 'slow (no token)'}
-      </span>
-    </div>
+    <div><b>${name} (${symbol})</b> • decimals: ${decimals}</div>
     <div>Общий саплай: <b>${fmtGram(totalSupply)}</b></div>
   `;
 }
@@ -434,7 +400,6 @@ function initDistributionToggle() {
 // ===== boot =====
 async function boot() {
   try {
-    updateAuthUI();
     await loadPrice();
     setInterval(loadPrice, 60000); // обновляем раз в минуту
     await loadMeta();
@@ -454,5 +419,4 @@ limitSel.onchange = () => { page = 0; boot(); };
 prevBt.onclick = () => { if (page>0) { page--; boot(); } };
 nextBt.onclick = () => { page++; boot(); };
 
-initTokenUI();
 boot();
