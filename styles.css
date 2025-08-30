@@ -38,14 +38,109 @@ h1{margin:0 0 8px 0;font-size:20px}
 .meta{margin-top:8px;color:var(--muted)}
 
 main{padding:16px 0}
+
+/* Контейнер для таблицы с горизонтальной прокруткой на мобильных */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -16px;
+  padding: 0 16px;
+}
+
 table{width:100%;border-collapse:separate;border-spacing:0 8px}
 thead th{font-weight:600;text-align:left;color:var(--muted);padding:6px 10px}
 tbody tr{background:var(--card)}
 tbody td{padding:10px}
 tbody tr:hover{outline:1px solid #263049}
 .addr{display:flex;align-items:center;gap:6px;word-break:break-all}
+.addr span{font-family:'Courier New',monospace;font-size:13px;color:var(--fg)}
+.addr .address-text{cursor:pointer;transition:color 0.2s ease}
+.addr .address-text:hover{color:var(--accent)}
 .addr .copy{background:#1a1f2e;border:1px solid #3a4152;border-radius:6px;padding:4px 6px;cursor:pointer;color:#cfe9ff;transition:all 0.2s ease}
 .addr .copy:hover{background:#2a3142;border-color:#4a5162;transform:scale(1.05)}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 768px) {
+  .addr {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  
+  .addr span {
+    font-size: 12px;
+    line-height: 1.2;
+    cursor: pointer;
+  }
+  
+  .addr .copy {
+    align-self: flex-end;
+    font-size: 10px;
+    padding: 3px 5px;
+  }
+  
+  /* Показываем полный адрес при наведении на мобильных */
+  .addr span:hover {
+    color: var(--accent);
+  }
+}
+
+@media (max-width: 480px) {
+  .addr span {
+    font-size: 11px;
+  }
+  
+  .addr .copy {
+    font-size: 9px;
+    padding: 2px 4px;
+  }
+}
+
+/* Адаптивные стили для таблицы на мобильных */
+@media (max-width: 768px) {
+  .table-wrapper {
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+  
+  table {
+    min-width: 600px; /* Минимальная ширина для читаемости */
+    font-size: 12px;
+  }
+  
+  thead th {
+    padding: 8px 6px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  
+  tbody td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-wrapper {
+    margin: 0 -8px;
+    padding: 0 8px;
+  }
+  
+  table {
+    min-width: 500px;
+    font-size: 11px;
+  }
+  
+  thead th {
+    padding: 6px 4px;
+    font-size: 10px;
+  }
+  
+  tbody td {
+    padding: 6px 4px;
+    font-size: 11px;
+  }
+}
 .num{text-align:right;font-variant-numeric:tabular-nums}
 .muted{color:var(--muted);text-align:center}
 .error{color:#ff8a80;text-align:center}
