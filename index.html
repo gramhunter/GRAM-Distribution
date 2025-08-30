@@ -26,25 +26,7 @@
 
   <div class="container">
     <header>
-      <h1>Top Addresses — GRAM</h1>
-
-      <div class="controls">
-        <label>Показать топ:
-          <select id="limit">
-            <option>25</option><option selected>50</option><option>100</option><option>250</option>
-          </select>
-        </label>
-        <button id="reload">Обновить</button>
-
-        <!-- Блок токена -->
-        <div class="token-box">
-          <input id="token" type="text" placeholder="TONAPI токен (необязательно)" autocomplete="off" />
-          <button id="saveToken">Сохранить</button>
-          <button id="clearToken" class="ghost">Очистить</button>
-          <span id="authBadge" class="badge">Auth: none</span>
-        </div>
-      </div>
-
+      <h1>GRAM Holders Dashboard</h1>
       <div id="meta" class="meta"></div>
     </header>
 
@@ -105,7 +87,20 @@
       </div>
     </section>
 
-    <main>
+    <!-- Таблица Top Addresses -->
+    <section id="top-addresses-section" class="top-addresses-section">
+      <div class="section-header">
+        <h2>Top Addresses — GRAM</h2>
+        <div class="controls">
+          <label>Показать топ:
+            <select id="limit">
+              <option>25</option><option selected>50</option><option>100</option><option>250</option>
+            </select>
+          </label>
+          <button id="reload">Обновить</button>
+        </div>
+      </div>
+      
       <div class="table-wrapper">
         <table id="tbl">
           <thead>
@@ -128,12 +123,11 @@
         <span id="pageinfo"></span>
         <button id="next">Вперёд</button>
       </div>
-    </main>
+    </section>
 
     <footer>
       <small>
-        Данные: TonAPI • GRAM jetton master: EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O •
-        Без токена лимит 1 запрос / 4 с. С токеном — быстрее (по лимитам TonAPI). Цена: CoinGecko (gram-2).
+        Данные: TonAPI • GRAM jetton master: EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O • Цена: CoinGecko (gram-2) • Лимит: 1 запрос / 4 секунды
       </small>
     </footer>
   </div>
