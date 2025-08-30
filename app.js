@@ -301,6 +301,110 @@ async function loadPrice() {
   }
 }
 
+// ===== Distribution Table Functions =====
+async function loadDistributionData() {
+  try {
+    const response = await fetch('./distribution.json');
+    if (!response.ok) throw new Error('Failed to load distribution.json');
+    
+    const data = await response.json();
+    
+    // Обновляем время последнего обновления
+    const lastUpdatedEl = q('#lastUpdated');
+    if (lastUpdatedEl && data.generated_at) {
+      const date = new Date(data.generated_at);
+      lastUpdatedEl.textContent = `Last updated: ${date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}`;
+    }
+    
+    // Заполняем таблицу
+    const distributionRowsEl = q('#distributionRows');
+    if (distributionRowsEl && data.buckets) {
+      distributionRowsEl.innerHTML = data.buckets.map(bucket => {
+        const count = bucket.count || 0;
+        const sum = bucket.sum || '0';
+        const deltaCount = bucket.delta_count || {};
+        
+        // Форматируем баланс
+        const balanceFormatted = fmtGram(sum);
+        const balanceNumber = getGramNumber(sum);
+        const usdValue = priceUSD ? (balanceNumber * priceUSD).toLocaleString('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0
+        }) : '$—';
+        
+        // Вычисляем процент от общего предложения
+        const percentage = totalSupply > 0 ? ((balanceNumber / getGramNumber(totalSupply)) * 100).toFixed(2) : '0.00';
+        
+        // Форматируем дельты
+        const formatDelta = (value) => {
+          if (value === undefined || value === null) return '—';
+          if (value === 0) return '0';
+          return value > 0 ? `+${value}` : `${value}`;
+        };
+        
+        const getDeltaClass = (value) => {
+          if (value === undefined || value === null) return 'delta-neutral';
+          if (value > 0) return 'delta-positive';
+          if (value < 0) return 'delta-negative';
+          return 'delta-neutral';
+        };
+        
+        return `
+          <tr>
+            <td>
+              <div class="category-cell">
+                <span class="category-emoji">${bucket.emoji || '💰'}</span>
+                <div class="category-info">
+                  <div class="category-name">${bucket.label || bucket.key || 'Unknown'}</div>
+                  <div class="category-range">${bucket.range_label || ''}</div>
+                </div>
+              </div>
+            </td>
+            <td class="balance-range">${bucket.range_label || ''}</td>
+            <td class="count-cell">${count.toLocaleString()}</td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['1h'])}">${formatDelta(deltaCount['1h'])}</td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['24h'])}">${formatDelta(deltaCount['24h'])}</td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['7d'])}">${formatDelta(deltaCount['7d'])}</td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['30d'])}">${formatDelta(deltaCount['30d'])}</td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['90d'])}">${formatDelta(deltaCount['90d'])}</td>
+            <td class="total-balance-cell">
+              <div class="balance-amount">${balanceFormatted}</div>
+              <div class="balance-usd">${usdValue}</div>
+            </td>
+            <td class="percentage-cell">${percentage}%</td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } catch (e) {
+    console.error('Error loading distribution data:', e);
+    const distributionRowsEl = q('#distributionRows');
+    if (distributionRowsEl) {
+      distributionRowsEl.innerHTML = `<tr><td colspan="9" class="error">Ошибка загрузки данных распределения: ${e.message}</td></tr>`;
+    }
+  }
+}
+
+// Toggle для показа/скрытия значений
+function initDistributionToggle() {
+  const showValueToggle = q('#showValue');
+  if (showValueToggle) {
+    showValueToggle.addEventListener('change', (e) => {
+      const isChecked = e.target.checked;
+      // Здесь можно добавить логику для показа/скрытия дополнительных значений
+      console.log('Show value toggle:', isChecked);
+    });
+  }
+}
+
 // ===== boot =====
 async function boot() {
   try {
@@ -311,6 +415,8 @@ async function boot() {
     await loadStats();
     await loadTags();      // <<< добавить
     await loadHolders();
+    await loadDistributionData(); // Загружаем данные распределения
+    initDistributionToggle(); // Инициализируем toggle
   } catch (e) {
     rowsEl.innerHTML = `<tr><td colspan="5" class="error">Ошибка: ${e.message}</td></tr>`;
     console.error(e);
