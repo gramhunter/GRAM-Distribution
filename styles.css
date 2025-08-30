@@ -25,16 +25,7 @@ body{margin:0;font:14px/1.5 system-ui,Segoe UI,Roboto; background:var(--bg); col
 header{padding:16px 0;border-bottom:1px solid #1f2430;background:var(--card)}
 h1{margin:0 0 8px 0;font-size:20px}
 .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.controls input,.controls select, .controls button{
-  background:#0f1320;color:var(--fg);border:1px solid #242b3a;border-radius:8px;padding:8px 10px
-}
-.controls button{cursor:pointer}
-.controls .ghost{background:transparent;border-color:#2b3346}
-.token-box{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.token-box input{min-width:260px}
 .badge{display:inline-block;padding:2px 8px;border-radius:999px;font-size:12px;border:1px solid #2b3346;color:var(--muted)}
-.badge.ok{border-color:#295f46;color:var(--ok)}
-.badge.warn{border-color:#5f4b29;color:var(--warn)}
 .meta{margin-top:8px;color:var(--muted)}
 
 main{padding:16px 0}
@@ -206,6 +197,62 @@ footer{padding:16px 0;color:var(--muted);border-top:1px solid #1f2430}
   border-radius: 12px;
   padding: 20px;
   border: 1px solid #1f2430;
+}
+
+/* Top Addresses Section Styles */
+.top-addresses-section {
+  margin: 24px 0;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #1f2430;
+}
+
+.top-addresses-section .section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.top-addresses-section .section-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--fg);
+}
+
+.top-addresses-section .controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.top-addresses-section .controls label {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.top-addresses-section .controls select,
+.top-addresses-section .controls button {
+  background: #0f1320;
+  color: var(--fg);
+  border: 1px solid #242b3a;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+}
+
+.top-addresses-section .controls button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.top-addresses-section .controls button:hover {
+  background: #1a1f2e;
+  border-color: #3a4152;
 }
 
 .section-header {
