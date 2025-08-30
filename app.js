@@ -48,6 +48,15 @@ function initTokenUI() {
 }
 
 // ===== formatters =====
+function shortenAddress(address, startLength = 6, endLength = 4) {
+  if (!address || address.length <= startLength + endLength + 3) {
+    return address;
+  }
+  const start = address.substring(0, startLength);
+  const end = address.substring(address.length - endLength);
+  return `${start}...${end}`;
+}
+
 function fmtGram(intLike) {
   try {
     const n = BigInt(intLike);
@@ -253,8 +262,8 @@ async function loadHolders() {
         <tr>
           <td>${rank}</td>
           <td class="addr">
-            <span>${addr}</span>
-            <button class="copy" data-copy="${addr}" title="Скопировать адрес">⧉</button>
+            <span title="${addr}" class="address-text">${shortenAddress(addr)}</span>
+            <button class="copy" data-copy="${addr}" title="Скопировать полный адрес">⧉</button>
           </td>
           <td>${tagHTML}</td>
           <td class="num">
@@ -276,6 +285,23 @@ async function loadHolders() {
         btn.textContent = '✓';
         setTimeout(() => (btn.textContent = '⧉'), 700);
       } catch {}
+    });
+  });
+  
+  // Добавляем возможность показать полный адрес при клике
+  [...document.querySelectorAll('.addr .address-text')].forEach(span => {
+    span.addEventListener('click', () => {
+      const fullAddress = span.getAttribute('title');
+      if (fullAddress && fullAddress !== span.textContent) {
+        // Показываем полный адрес на 3 секунды
+        const originalText = span.textContent;
+        span.textContent = fullAddress;
+        span.style.color = 'var(--accent)';
+        setTimeout(() => {
+          span.textContent = originalText;
+          span.style.color = '';
+        }, 3000);
+      }
     });
   });
 }
