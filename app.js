@@ -20,7 +20,7 @@ const priceBadge = q('#priceBadge');
 let decimals = 9;
 let totalSupply = 0n;
 let page = 0;
-let priceUSD = null;        // текущая цена GRAM из CoinGecko (usd)
+let priceUSD = null;        // current GRAM price from CoinGecko (usd)
 let tagMap = new Map();     // address -> tag
 
 
@@ -42,10 +42,10 @@ function fmtGram(intLike) {
     const whole = n / pow;
     const frac = (n % pow).toString().padStart(decimals, '0').replace(/0+$/,'');
     
-    // Форматируем целую часть с разделителями тысяч
+    // Format whole part with thousand separators
     const formattedWhole = whole.toLocaleString();
     
-    // Форматируем дробную часть (максимум 2 знака)
+    // Format fractional part (max 2 digits)
     let formattedFrac = '';
     if (frac) {
       formattedFrac = '.' + frac.slice(0, 2);
@@ -55,7 +55,7 @@ function fmtGram(intLike) {
   } catch { return '—'; }
 }
 
-// Функция для получения числа GRAM без форматирования (для расчетов)
+// Function to get GRAM number without formatting (for calculations)
 function getGramNumber(intLike) {
   try {
     const n = BigInt(intLike);
@@ -85,7 +85,7 @@ function esc(s) {
 
 async function loadTags() {
   try {
-    const res = await fetch('./tags.json?_=' + Date.now()); // избегаем кэша
+    const res = await fetch('./tags.json?_=' + Date.now()); // avoid cache
     if (!res.ok) throw new Error(String(res.status));
     const data = await res.json();
     const map = new Map();
@@ -123,7 +123,7 @@ function fmtUSD(n) {
 
 // ===== throttling for TonAPI =====
 let lastCall = 0;
-function minGapMs() { return 4000; } // Фиксированный интервал 4 секунды без токена
+function minGapMs() { return 4000; } // Fixed 4 second interval without token
 async function throttledFetch(url, options = {}) {
   const now = Date.now();
   const wait = Math.max(0, minGapMs() - (now - lastCall));
@@ -158,7 +158,7 @@ async function loadMeta() {
 
   metaEl.innerHTML = `
     <div><b>${name} (${symbol})</b> • decimals: ${decimals}</div>
-    <div>Общий саплай: <b>${fmtGram(totalSupply)}</b></div>
+    <div>Total Supply: <b>${fmtGram(totalSupply)}</b></div>
   `;
 }
 
@@ -201,13 +201,13 @@ async function loadHolders() {
   const limit = Number(limitSel.value);
   const offset = page * limit;
 
-  rowsEl.innerHTML = `<tr><td colspan="4" class="muted">Загрузка…</td></tr>`;
+  rowsEl.innerHTML = `<tr><td colspan="4" class="muted">Loading...</td></tr>`;
 
   const data = await tonFetch(`/jettons/${MASTER}/holders?limit=${limit}&offset=${offset}`);
   const list = data.holders || data.addresses || data.items || data || [];
 
   if (!list.length) {
-    rowsEl.innerHTML = `<tr><td colspan="5" class="muted">Ничего не найдено</td></tr>`;
+    rowsEl.innerHTML = `<tr><td colspan="5" class="muted">Nothing found</td></tr>`;
   } else {
     rowsEl.innerHTML = list.map((it, i) => {
       const rank = offset + i + 1;
@@ -215,13 +215,13 @@ async function loadHolders() {
       const addr = toFriendlyNonBounceable(raw);
       const bal  = it.balance ?? it.amount ?? it.jetton_balance ?? 0;
 
-      // тег (ищем по friendly и raw)
+      // tag (search by friendly and raw)
       const tagLabel = tagMap.get(addr) || tagMap.get(raw) || '';
       const tagHTML  = tagLabel ? `<span class="tag">${esc(tagLabel)}</span>` : '';
 
       // USD эквивалент: используем getGramNumber для точного расчета
       const gramsStr = fmtGram(bal);
-      const gramsNum = getGramNumber(bal);  // точное число для расчетов
+      const gramsNum = getGramNumber(bal);  // exact number for calculations
       const usdStr   = priceUSD ? fmtUSD(gramsNum * priceUSD) : '$—';
 
       return `
@@ -254,12 +254,12 @@ async function loadHolders() {
     });
   });
   
-  // Добавляем возможность показать полный адрес при клике
+          // Add ability to show full address on click
   [...document.querySelectorAll('.addr .address-text')].forEach(span => {
     span.addEventListener('click', () => {
       const fullAddress = span.getAttribute('title');
       if (fullAddress && fullAddress !== span.textContent) {
-        // Показываем полный адрес на 3 секунды
+        // Show full address for 3 seconds
         const originalText = span.textContent;
         span.textContent = fullAddress;
         span.style.color = 'var(--accent)';
@@ -301,7 +301,7 @@ async function loadDistributionData() {
     
     const data = await response.json();
     
-    // Обновляем время последнего обновления
+    // Update last updated time
     const lastUpdatedEl = q('#lastUpdated');
     if (lastUpdatedEl && data.generated_at) {
       const date = new Date(data.generated_at);
@@ -314,7 +314,7 @@ async function loadDistributionData() {
       })}`;
     }
     
-    // Заполняем таблицу
+    // Fill the table
     const distributionRowsEl = q('#distributionRows');
     if (distributionRowsEl && data.buckets) {
       distributionRowsEl.innerHTML = data.buckets.map(bucket => {
@@ -322,7 +322,7 @@ async function loadDistributionData() {
         const sum = bucket.sum || '0';
         const deltaCount = bucket.delta_count || {};
         
-        // Форматируем баланс
+        // Format balance
         const balanceFormatted = fmtGram(sum);
         const balanceNumber = getGramNumber(sum);
         const usdValue = priceUSD ? (balanceNumber * priceUSD).toLocaleString('en-US', {
@@ -332,10 +332,10 @@ async function loadDistributionData() {
           maximumFractionDigits: 0
         }) : '$—';
         
-        // Вычисляем процент от общего предложения
+        // Calculate percentage of total supply
         const percentage = totalSupply > 0 ? ((balanceNumber / getGramNumber(totalSupply)) * 100).toFixed(2) : '0.00';
         
-        // Форматируем дельты
+        // Format deltas
         const formatDelta = (value) => {
           if (value === undefined || value === null) return '—';
           if (value === 0) return '0';
@@ -380,7 +380,7 @@ async function loadDistributionData() {
     console.error('Error loading distribution data:', e);
     const distributionRowsEl = q('#distributionRows');
     if (distributionRowsEl) {
-      distributionRowsEl.innerHTML = `<tr><td colspan="9" class="error">Ошибка загрузки данных распределения: ${e.message}</td></tr>`;
+      distributionRowsEl.innerHTML = `<tr><td colspan="9" class="error">Error loading distribution data: ${e.message}</td></tr>`;
     }
   }
 }
@@ -391,7 +391,7 @@ function initDistributionToggle() {
   if (showValueToggle) {
     showValueToggle.addEventListener('change', (e) => {
       const isChecked = e.target.checked;
-      // Здесь можно добавить логику для показа/скрытия дополнительных значений
+      // Here you can add logic for showing/hiding additional values
       console.log('Show value toggle:', isChecked);
     });
   }
@@ -401,18 +401,81 @@ function initDistributionToggle() {
 async function boot() {
   try {
     await loadPrice();
-    setInterval(loadPrice, 60000); // обновляем раз в минуту
+    setInterval(loadPrice, 60000); // update every minute
     await loadMeta();
     await loadStats();
     await loadTags();      // <<< добавить
     await loadHolders();
-    await loadDistributionData(); // Загружаем данные распределения
-    initDistributionToggle(); // Инициализируем toggle
+    await loadDistributionData(); // Load distribution data
+    initDistributionToggle(); // Initialize toggle
   } catch (e) {
-    rowsEl.innerHTML = `<tr><td colspan="5" class="error">Ошибка: ${e.message}</td></tr>`;
+    rowsEl.innerHTML = `<tr><td colspan="5" class="error">Error: ${e.message}</td></tr>`;
     console.error(e);
   }
 }
+
+// ===== Support Modal =====
+const supportBtn = q('#supportBtn');
+const supportModal = q('#supportModal');
+const modalClose = q('#modalClose');
+const copyAddress = q('#copyAddress');
+const walletAddress = q('#walletAddress');
+
+// Open modal window
+supportBtn.addEventListener('click', () => {
+  supportModal.classList.add('show');
+});
+
+// Close modal window
+modalClose.addEventListener('click', () => {
+  supportModal.classList.remove('show');
+});
+
+// Close by clicking outside modal
+supportModal.addEventListener('click', (e) => {
+  if (e.target === supportModal) {
+    supportModal.classList.remove('show');
+  }
+});
+
+// Close by Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && supportModal.classList.contains('show')) {
+    supportModal.classList.remove('show');
+  }
+});
+
+// Copy address
+copyAddress.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(walletAddress.textContent);
+    
+          // Temporary icon change for confirmation
+    const originalHTML = copyAddress.innerHTML;
+    copyAddress.innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20,6 9,17 4,12"></polyline>
+      </svg>
+    `;
+    copyAddress.style.background = '#10b981';
+    
+    setTimeout(() => {
+      copyAddress.innerHTML = originalHTML;
+      copyAddress.style.background = '';
+    }, 2000);
+  } catch (err) {
+    console.error('Failed to copy: ', err);
+    // Fallback для старых браузеров
+    const textArea = document.createElement('textarea');
+    textArea.value = walletAddress.textContent;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+  }
+});
+
+
 
 reloadBt.onclick = () => { page = 0; boot(); };
 limitSel.onchange = () => { page = 0; boot(); };
