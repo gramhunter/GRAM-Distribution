@@ -6,6 +6,7 @@
   <title>GRAM Top Addresses</title>
   <link rel="stylesheet" href="./styles.css" />
   <meta name="description" content="Top addresses (holders) for GRAM jetton on TON, via TonAPI. Optional token for faster rate limits." />
+
 </head>
 <body>
   <!-- Topbar -->
@@ -14,11 +15,10 @@
       <div class="topbar-left">
         <a class="brand" href="#">Gramhunters</a>
         <a class="navlink active" href="#">Dashboard</a>
-        <a class="navlink" href="#">Tokens</a>
-        <a class="navlink" href="#">Top Addresses</a>
-        <a class="navlink" href="https://docs.tonconsole.com/" target="_blank" rel="noopener">API Docs</a>
+        <a class="navlink" href="https://t.me/gramhunters" target="_blank" rel="noopener">Telegram Channel</a>
       </div>
       <div class="topbar-right">
+        <button class="support-btn" id="supportBtn">Support Us</button>
         <span class="price-badge" id="priceBadge">$—</span>
       </div>
     </div>
@@ -30,7 +30,7 @@
       <div id="meta" class="meta"></div>
     </header>
 
-    <!-- KPI-карточки -->
+    <!-- KPI Cards -->
     <section id="stats" class="stats">
       <div class="stat-card">
         <div class="stat-value" id="statAddresses">—</div>
@@ -56,7 +56,7 @@
       </div>
     </section>
 
-    <!-- Таблица распределения кошельков по категориям -->
+    <!-- Wallet Distribution by Categories Table -->
     <section id="distribution-section" class="distribution-section">
       <div class="section-header">
         <h2>Address Distribution</h2>
@@ -81,23 +81,23 @@
             </tr>
           </thead>
           <tbody id="distributionRows">
-            <tr><td colspan="9" class="muted">Загрузка данных распределения…</td></tr>
+            <tr><td colspan="9" class="muted">Loading distribution data...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- Таблица Top Addresses -->
+    <!-- Top Addresses Table -->
     <section id="top-addresses-section" class="top-addresses-section">
       <div class="section-header">
         <h2>Top Addresses — GRAM</h2>
         <div class="controls">
-          <label>Показать топ:
+          <label>Show top:
             <select id="limit">
               <option>25</option><option selected>50</option><option>100</option><option>250</option>
             </select>
           </label>
-          <button id="reload">Обновить</button>
+          <button id="reload">Refresh</button>
         </div>
       </div>
       
@@ -106,28 +106,28 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>Адрес</th>
+              <th>Address</th>
               <th>Tags</th>
-              <th class="num">Баланс (GRAM)</th>
-              <th class="num">% от саплая</th>
+              <th class="num">Balance (GRAM)</th>
+              <th class="num">% from Supply</th>
             </tr>
           </thead>
           <tbody id="rows">
-            <tr><td colspan="5" class="muted">Загрузка…</td></tr>
+            <tr><td colspan="5" class="muted">Loading from API...</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="pager">
-        <button id="prev">Назад</button>
+        <button id="prev">Previous</button>
         <span id="pageinfo"></span>
-        <button id="next">Вперёд</button>
+        <button id="next">Next</button>
       </div>
     </section>
 
     <footer>
       <small>
-        Данные: TonAPI • GRAM jetton master: EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O • Цена: CoinGecko (gram-2) • Лимит: 1 запрос / 4 секунды
+        Данные: TonAPI/TonCenter • GRAM jetton master: EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O • Цена: CoinGecko (gram-2) • Лимит: 1 запрос / 4 секунды
       </small>
     </footer>
   </div>
@@ -135,6 +135,42 @@
   <script>
     window.GRAM_MASTER = "EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O";
   </script>
+  <!-- Support Us Modal -->
+  <div id="supportModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>💗 Support Us</h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="qr-section">
+          <div class="qr-code">
+            <img src="./qr-code.png" alt="QR Code for wallet address" width="200" height="200">
+          </div>
+        </div>
+        
+        <div class="wallet-section">
+          <div class="wallet-address">
+            <span id="walletAddress">UQD_hq_UPGUF8vjfquAOvlHLa35JIJBgPPajnckkfBOhs-UA</span>
+            <button class="copy-btn" id="copyAddress" title="Скопировать адрес">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <div class="description-section">
+          <h4>Thanks for your support!</h4>
+          <p>Make GRAM great again!</p>
+          <p>Cryptobot Donate: <a href="https://t.me/send?start=IV1F9XF1CF10" target="_blank">https://t.me/send?start=IV1F9XF1CF10</a>  </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>
