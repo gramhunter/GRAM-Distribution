@@ -255,6 +255,126 @@ footer{padding:16px 0;color:var(--muted);border-top:1px solid #1f2430}
   border-color: #3a4152;
 }
 
+/* Sortable table headers */
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.sortable:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sort-icon {
+  font-size: 12px;
+  margin-left: 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.sortable.sort-asc .sort-icon {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.sortable.sort-desc .sort-icon {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.sortable.sort-asc .sort-icon::after {
+  content: " ↑";
+}
+
+.sortable.sort-desc .sort-icon::after {
+  content: " ↓";
+}
+
+/* Balance change colors */
+.positive {
+  color: #10b981;
+}
+
+.negative {
+  color: #ef4444;
+}
+
+/* Dash styling for no change */
+.no-change {
+  color: var(--muted);
+}
+
+/* Balance change background styling */
+.balance-change-cell {
+  position: relative;
+}
+
+.balance-change-cell .change-value {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 500;
+  min-width: 80px;
+  text-align: center;
+}
+
+.balance-change-cell.positive .change-value {
+  background-color: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.balance-change-cell.negative .change-value {
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.balance-change-cell.no-change .change-value {
+  background-color: rgba(156, 163, 175, 0.1);
+  border: 1px solid rgba(156, 163, 175, 0.2);
+  color: var(--muted);
+}
+
+/* USD badge styling for balance change column */
+.balance-change-cell .usd-badge {
+  margin-top: 4px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+/* Distribution table delta backgrounds */
+.distribution-table .delta-cell {
+  position: relative;
+}
+
+.distribution-table .delta-cell .delta-value {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
+}
+
+.distribution-table .delta-cell.delta-positive .delta-value {
+  background-color: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.distribution-table .delta-cell.delta-negative .delta-value {
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+.distribution-table .delta-cell.delta-neutral .delta-value {
+  background-color: rgba(156, 163, 175, 0.1);
+  border: 1px solid rgba(156, 163, 175, 0.2);
+  color: var(--muted);
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;
