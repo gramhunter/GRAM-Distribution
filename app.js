@@ -304,7 +304,7 @@ async function loadHolders() {
           <tr>
             <td>${rank}</td>
             <td class="addr">
-              <span title="${address}" class="address-text">${shortenAddress(address)}</span>
+              <a href="https://tonscan.org/address/${address}" target="_blank" title="${address}" class="address-text">${shortenAddress(address)}</a>
               <button class="copy" data-copy="${address}" title="Copy full address">⧉</button>
             </td>
             <td>${tagHTML}</td>
@@ -341,21 +341,7 @@ async function loadHolders() {
       });
     });
     
-    // Add ability to show full address on click
-    [...document.querySelectorAll('.addr .address-text')].forEach(span => {
-      span.addEventListener('click', () => {
-        const fullAddress = span.getAttribute('title');
-        if (fullAddress && fullAddress !== span.textContent) {
-          const originalText = span.textContent;
-          span.textContent = fullAddress;
-          span.style.color = 'var(--accent)';
-          setTimeout(() => {
-            span.textContent = originalText;
-            span.style.color = '';
-          }, 3000);
-        }
-      });
-    });
+    // Note: Address links now open TONScan in new tab, no need for click handler
     
   } catch (error) {
     console.error('Error loading holders:', error);
