@@ -87,14 +87,17 @@
       </div>
     </section>
 
-    <!-- Top Addresses Table -->
+    <!-- Top 10000 Addresses Table -->
     <section id="top-addresses-section" class="top-addresses-section">
       <div class="section-header">
-        <h2>Top Addresses — GRAM</h2>
+        <h2>Top 10000 Addresses — GRAM</h2>
         <div class="controls">
-          <label>Show top:
+          <label>Show per page:
             <select id="limit">
-              <option>25</option><option selected>50</option><option>100</option><option>250</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
             </select>
           </label>
           <button id="reload">Refresh</button>
@@ -105,15 +108,16 @@
         <table id="tbl">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Address</th>
-              <th>Tags</th>
-              <th class="num">Balance (GRAM)</th>
-              <th class="num">% from Supply</th>
+              <th class="sortable" data-sort="rank"># <span class="sort-icon">↕</span></th>
+              <th class="sortable" data-sort="address">Address <span class="sort-icon">↕</span></th>
+              <th class="sortable" data-sort="tags">Tags <span class="sort-icon">↕</span></th>
+              <th class="sortable num" data-sort="balance">Balance (GRAM) <span class="sort-icon">↕</span></th>
+              <th class="sortable num" data-sort="balance_change_24h">24h Change <span class="sort-icon">↕</span></th>
+              <th class="sortable num" data-sort="percentage">% from Supply <span class="sort-icon">↕</span></th>
             </tr>
           </thead>
           <tbody id="rows">
-            <tr><td colspan="5" class="muted">Loading from API...</td></tr>
+            <tr><td colspan="6" class="muted">Loading addresses from distribution.json...</td></tr>
           </tbody>
         </table>
       </div>
