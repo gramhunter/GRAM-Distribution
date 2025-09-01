@@ -45,8 +45,10 @@ tbody td{padding:10px}
 tbody tr:hover{outline:1px solid #263049}
 .addr{display:flex;align-items:center;gap:6px;word-break:break-all}
 .addr span{font-family:'Courier New',monospace;font-size:13px;color:var(--fg)}
+.addr a{font-family:'Courier New',monospace;font-size:13px;color:var(--fg);text-decoration:none;transition:color 0.2s ease}
 .addr .address-text{cursor:pointer;transition:color 0.2s ease}
 .addr .address-text:hover{color:var(--accent)}
+.addr a:hover{color:var(--accent);text-decoration:underline}
 .addr .copy{background:#1a1f2e;border:1px solid #3a4152;border-radius:6px;padding:4px 6px;cursor:pointer;color:#cfe9ff;transition:all 0.2s ease}
 .addr .copy:hover{background:#2a3142;border-color:#4a5162;transform:scale(1.05)}
 
