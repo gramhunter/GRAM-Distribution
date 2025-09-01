@@ -197,79 +197,227 @@ async function loadStats() {
 }
 
 // ===== table =====
+let allAddresses = []; // Store all addresses from distribution.json
+let currentSort = { field: 'rank', direction: 'asc' }; // Current sorting state
+
 async function loadHolders() {
-  const limit = Number(limitSel.value);
-  const offset = page * limit;
+  try {
+    rowsEl.innerHTML = `<tr><td colspan="6" class="muted">Loading addresses from distribution.json...</td></tr>`;
 
-  rowsEl.innerHTML = `<tr><td colspan="4" class="muted">Loading...</td></tr>`;
+    // Load addresses from distribution.json if not already loaded
+    if (allAddresses.length === 0) {
+      const response = await fetch('./distribution.json?_=' + Date.now());
+      if (!response.ok) {
+        throw new Error('Failed to load distribution.json');
+      }
+      const data = await response.json();
+      allAddresses = data.addresses || [];
+      
+      if (allAddresses.length === 0) {
+        rowsEl.innerHTML = `<tr><td colspan="6" class="muted">No addresses found in distribution.json</td></tr>`;
+        return;
+      }
+    }
 
-  const data = await tonFetch(`/jettons/${MASTER}/holders?limit=${limit}&offset=${offset}`);
-  const list = data.holders || data.addresses || data.items || data || [];
-
-  if (!list.length) {
-    rowsEl.innerHTML = `<tr><td colspan="5" class="muted">Nothing found</td></tr>`;
-  } else {
-    rowsEl.innerHTML = list.map((it, i) => {
-      const rank = offset + i + 1;
-      const raw  = it.owner?.address || it.address || it.account?.address || it.wallet_address || '—';
-      const addr = toFriendlyNonBounceable(raw);
-      const bal  = it.balance ?? it.amount ?? it.jetton_balance ?? 0;
-
-      // tag (search by friendly and raw)
-      const tagLabel = tagMap.get(addr) || tagMap.get(raw) || '';
-      const tagHTML  = tagLabel ? `<span class="tag">${esc(tagLabel)}</span>` : '';
-
-      // USD эквивалент: используем getGramNumber для точного расчета
-      const gramsStr = fmtGram(bal);
-      const gramsNum = getGramNumber(bal);  // exact number for calculations
-      const usdStr   = priceUSD ? fmtUSD(gramsNum * priceUSD) : '$—';
-
-      return `
-        <tr>
-          <td>${rank}</td>
-          <td class="addr">
-            <span title="${addr}" class="address-text">${shortenAddress(addr)}</span>
-            <button class="copy" data-copy="${addr}" title="Скопировать полный адрес">⧉</button>
-          </td>
-          <td>${tagHTML}</td>
-          <td class="num">
-            <span>${gramsStr}</span>
-            <span class="usd-badge">${usdStr}</span>
-          </td>
-          <td class="num">${pct(bal)}</td>
-        </tr>
-      `;
-    }).join('');
-  }
-
-  pageInfo.textContent = `Стр. ${page + 1}`;
-
-  [...document.querySelectorAll('button.copy')].forEach(btn => {
-    btn.addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(btn.dataset.copy);
-        btn.textContent = '✓';
-        setTimeout(() => (btn.textContent = '⧉'), 700);
-      } catch {}
+    // Apply current sorting
+    const sortedAddresses = [...allAddresses].sort((a, b) => {
+      let aVal, bVal;
+      
+      switch (currentSort.field) {
+        case 'rank':
+          aVal = a.rank;
+          bVal = b.rank;
+          break;
+        case 'address':
+          aVal = a.address;
+          bVal = b.address;
+          break;
+        case 'tags':
+          aVal = getTagLabel(a.address) || '';
+          bVal = getTagLabel(b.address) || '';
+          break;
+        case 'balance':
+          aVal = BigInt(a.balance || '0');
+          bVal = BigInt(b.balance || '0');
+          break;
+        case 'balance_change_24h':
+          // Handle zero values for sorting (treat as 0)
+          aVal = (a.balance_change_24h === '0' || a.balance_change_24h === 0) ? 0n : BigInt(a.balance_change_24h || '0');
+          bVal = (b.balance_change_24h === '0' || b.balance_change_24h === 0) ? 0n : BigInt(b.balance_change_24h || '0');
+          break;
+        case 'percentage':
+          aVal = totalSupply > 0n ? (BigInt(a.balance || '0') * 100000n) / totalSupply : 0n;
+          bVal = totalSupply > 0n ? (BigInt(b.balance || '0') * 100000n) / totalSupply : 0n;
+          break;
+        default:
+          aVal = a.rank;
+          bVal = b.rank;
+      }
+      
+      if (currentSort.direction === 'asc') {
+        return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+      } else {
+        return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+      }
     });
+
+    // Apply pagination
+    const limit = Number(limitSel.value);
+    const offset = page * limit;
+    const pageAddresses = sortedAddresses.slice(offset, offset + limit);
+
+    if (!pageAddresses.length) {
+      rowsEl.innerHTML = `<tr><td colspan="6" class="muted">No addresses found</td></tr>`;
+    } else {
+      rowsEl.innerHTML = pageAddresses.map((addr, i) => {
+        const rank = addr.rank;
+        const address = toFriendlyNonBounceable(addr.address);
+        const balance = addr.balance;
+        const balanceChange24h = addr.balance_change_24h;
+        
+        // Get tag
+        const tagLabel = getTagLabel(addr.address) || '';
+        const tagHTML = tagLabel ? `<span class="tag">${esc(tagLabel)}</span>` : '';
+        
+        // Format balance
+        const gramsStr = fmtGram(balance);
+        const gramsNum = getGramNumber(balance);
+        const usdStr = priceUSD ? fmtUSD(gramsNum * priceUSD) : '$—';
+        
+        // Format 24h change
+        let change24h, change24hUsd, change24hClass;
+        
+        if (balanceChange24h === '0' || balanceChange24h === 0) {
+          // If no change, show dash
+          change24h = '—';
+          change24hUsd = '—';
+          change24hClass = 'no-change';
+        } else {
+          // Format the change
+          change24h = fmtGram(balanceChange24h);
+          const change24hNum = getGramNumber(balanceChange24h);
+          change24hUsd = priceUSD ? fmtUSD(change24hNum * priceUSD) : '$—';
+          change24hClass = balanceChange24h.startsWith('-') ? 'negative' : 'positive';
+        }
+        
+        return `
+          <tr>
+            <td>${rank}</td>
+            <td class="addr">
+              <span title="${address}" class="address-text">${shortenAddress(address)}</span>
+              <button class="copy" data-copy="${address}" title="Copy full address">⧉</button>
+            </td>
+            <td>${tagHTML}</td>
+            <td class="num">
+              <span>${gramsStr}</span>
+              <span class="usd-badge">${usdStr}</span>
+            </td>
+            <td class="num balance-change-cell ${change24hClass}">
+              <span class="change-value">${change24h}</span>
+              <span class="usd-badge">${change24hUsd}</span>
+            </td>
+            <td class="num">${pct(balance)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Update page info
+    const totalPages = Math.ceil(sortedAddresses.length / limit);
+    pageInfo.textContent = `Page ${page + 1} of ${totalPages} (${sortedAddresses.length} total)`;
+    
+    // Update pagination buttons
+    prevBt.disabled = page === 0;
+    nextBt.disabled = page >= totalPages - 1;
+
+    // Add copy functionality
+    [...document.querySelectorAll('button.copy')].forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(btn.dataset.copy);
+          btn.textContent = '✓';
+          setTimeout(() => (btn.textContent = '⧉'), 700);
+        } catch {}
+      });
+    });
+    
+    // Add ability to show full address on click
+    [...document.querySelectorAll('.addr .address-text')].forEach(span => {
+      span.addEventListener('click', () => {
+        const fullAddress = span.getAttribute('title');
+        if (fullAddress && fullAddress !== span.textContent) {
+          const originalText = span.textContent;
+          span.textContent = fullAddress;
+          span.style.color = 'var(--accent)';
+          setTimeout(() => {
+            span.textContent = originalText;
+            span.style.color = '';
+          }, 3000);
+        }
+      });
+    });
+    
+  } catch (error) {
+    console.error('Error loading holders:', error);
+    rowsEl.innerHTML = `<tr><td colspan="6" class="muted">Error loading addresses: ${error.message}</td></tr>`;
+  }
+}
+
+// Helper function to get tag label
+function getTagLabel(address) {
+  const friendly = toFriendlyNonBounceable(address);
+  return tagMap.get(friendly) || tagMap.get(address) || '';
+}
+
+// Function to handle sorting
+function handleSort(field) {
+  if (currentSort.field === field) {
+    // Toggle direction if same field
+    currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+  } else {
+    // New field, default to ascending
+    currentSort.field = field;
+    currentSort.direction = 'asc';
+  }
+  
+  // Reset to first page when sorting
+  page = 0;
+  
+  // Update sort indicators
+  updateSortIndicators();
+  
+  // Reload table
+  loadHolders();
+}
+
+// Function to update sort indicators
+function updateSortIndicators() {
+  // Remove all sort classes
+  document.querySelectorAll('.sortable').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
   });
   
-          // Add ability to show full address on click
-  [...document.querySelectorAll('.addr .address-text')].forEach(span => {
-    span.addEventListener('click', () => {
-      const fullAddress = span.getAttribute('title');
-      if (fullAddress && fullAddress !== span.textContent) {
-        // Show full address for 3 seconds
-        const originalText = span.textContent;
-        span.textContent = fullAddress;
-        span.style.color = 'var(--accent)';
-        setTimeout(() => {
-          span.textContent = originalText;
-          span.style.color = '';
-        }, 3000);
+  // Add sort class to current sort field
+  const currentTh = document.querySelector(`[data-sort="${currentSort.field}"]`);
+  if (currentTh) {
+    currentTh.classList.add(`sort-${currentSort.direction}`);
+  }
+}
+
+// Initialize sorting functionality
+function initSorting() {
+  // Add click event listeners to sortable headers
+  document.querySelectorAll('.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const field = th.getAttribute('data-sort');
+      if (field) {
+        handleSort(field);
       }
     });
   });
+  
+  // Set initial sort indicators
+  updateSortIndicators();
 }
 
 // ===== price from CoinGecko =====
@@ -362,11 +510,11 @@ async function loadDistributionData() {
             </td>
             <td class="balance-range">${bucket.range_label || ''}</td>
             <td class="count-cell">${count.toLocaleString()}</td>
-            <td class="delta-cell ${getDeltaClass(deltaCount['1h'])}">${formatDelta(deltaCount['1h'])}</td>
-            <td class="delta-cell ${getDeltaClass(deltaCount['24h'])}">${formatDelta(deltaCount['24h'])}</td>
-            <td class="delta-cell ${getDeltaClass(deltaCount['7d'])}">${formatDelta(deltaCount['7d'])}</td>
-            <td class="delta-cell ${getDeltaClass(deltaCount['30d'])}">${formatDelta(deltaCount['30d'])}</td>
-            <td class="delta-cell ${getDeltaClass(deltaCount['90d'])}">${formatDelta(deltaCount['90d'])}</td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['1h'])}"><span class="delta-value">${formatDelta(deltaCount['1h'])}</span></td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['24h'])}"><span class="delta-value">${formatDelta(deltaCount['24h'])}</span></td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['7d'])}"><span class="delta-value">${formatDelta(deltaCount['7d'])}</span></td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['30d'])}"><span class="delta-value">${formatDelta(deltaCount['30d'])}</span></td>
+            <td class="delta-cell ${getDeltaClass(deltaCount['90d'])}"><span class="delta-value">${formatDelta(deltaCount['90d'])}</span></td>
             <td class="total-balance-cell">
               <div class="balance-amount">${balanceFormatted}</div>
               <div class="balance-usd">${usdValue}</div>
@@ -408,8 +556,11 @@ async function boot() {
     await loadHolders();
     await loadDistributionData(); // Load distribution data
     initDistributionToggle(); // Initialize toggle
+    
+    // Initialize sorting functionality
+    initSorting();
   } catch (e) {
-    rowsEl.innerHTML = `<tr><td colspan="5" class="error">Error: ${e.message}</td></tr>`;
+    rowsEl.innerHTML = `<tr><td colspan="6" class="error">Error: ${e.message}</td></tr>`;
     console.error(e);
   }
 }
@@ -477,9 +628,9 @@ copyAddress.addEventListener('click', async () => {
 
 
 
-reloadBt.onclick = () => { page = 0; boot(); };
-limitSel.onchange = () => { page = 0; boot(); };
-prevBt.onclick = () => { if (page>0) { page--; boot(); } };
-nextBt.onclick = () => { page++; boot(); };
+reloadBt.onclick = () => { page = 0; loadHolders(); };
+limitSel.onchange = () => { page = 0; loadHolders(); };
+prevBt.onclick = () => { if (page>0) { page--; loadHolders(); } };
+nextBt.onclick = () => { page++; loadHolders(); };
 
 boot();
