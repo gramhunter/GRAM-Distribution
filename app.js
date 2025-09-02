@@ -40,18 +40,11 @@ function fmtGram(intLike) {
     const n = BigInt(intLike);
     const pow = 10n ** BigInt(decimals);
     const whole = n / pow;
-    const frac = (n % pow).toString().padStart(decimals, '0').replace(/0+$/,'');
     
-    // Format whole part with thousand separators
+    // Format whole part with thousand separators (only integers, no decimals)
     const formattedWhole = whole.toLocaleString();
     
-    // Format fractional part (max 2 digits)
-    let formattedFrac = '';
-    if (frac) {
-      formattedFrac = '.' + frac.slice(0, 2);
-    }
-    
-    return `${formattedWhole}${formattedFrac} GRAM`;
+    return `${formattedWhole} GRAM`;
   } catch { return '—'; }
 }
 
@@ -61,8 +54,7 @@ function getGramNumber(intLike) {
     const n = BigInt(intLike);
     const pow = 10n ** BigInt(decimals);
     const whole = n / pow;
-    const frac = (n % pow).toString().padStart(decimals, '0').replace(/0+$/,'');
-    return frac ? parseFloat(`${whole}.${frac}`) : parseFloat(whole);
+    return Number(whole);
   } catch { return 0; }
 }
 function pct(intLike) {
