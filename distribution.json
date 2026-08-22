@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-22T09:00:00Z",
+  "generated_at": "2026-08-22T10:00:00Z",
   "decimals": 9,
   "supply": "",
   "buckets": [
@@ -13,9 +13,9 @@
       "delta_count": {
         "1h": 0,
         "24h": -3,
-        "7d": -94,
+        "7d": -101,
         "30d": 409,
-        "90d": 525
+        "90d": 528
       }
     },
     {
@@ -23,14 +23,14 @@
       "emoji": "🐙",
       "label": "Octopus",
       "range_label": "[1K - 10K]",
-      "count": 13073,
-      "sum": "43750697470000000",
+      "count": 13074,
+      "sum": "43751768950000000",
       "delta_count": {
-        "1h": -1,
-        "24h": -5,
-        "7d": -3,
+        "1h": 1,
+        "24h": -3,
+        "7d": -5,
         "30d": 47,
-        "90d": 321
+        "90d": 322
       }
     },
     {
@@ -39,13 +39,13 @@
       "label": "Fish",
       "range_label": "[10K - 100K]",
       "count": 5100,
-      "sum": "159730835350000000",
+      "sum": "159731185350000000",
       "delta_count": {
-        "1h": -1,
-        "24h": -4,
-        "7d": -12,
-        "30d": -38,
-        "90d": -7
+        "1h": 0,
+        "24h": -5,
+        "7d": -11,
+        "30d": -39,
+        "90d": -8
       }
     },
     {
@@ -59,7 +59,7 @@
         "1h": 0,
         "24h": 1,
         "7d": -2,
-        "30d": -3,
+        "30d": -2,
         "90d": -12
       }
     },
@@ -69,7 +69,7 @@
       "label": "Shark",
       "range_label": "[1M - 10M]",
       "count": 324,
-      "sum": "1029592973440000000",
+      "sum": "1029551033440000000",
       "delta_count": {
         "1h": 0,
         "24h": 0,
@@ -84,7 +84,7 @@
       "label": "Whale",
       "range_label": "[10M - 100M]",
       "count": 29,
-      "sum": "609511973790000000",
+      "sum": "609552492320000000",
       "delta_count": {
         "1h": 0,
         "24h": 0,
@@ -114,7 +114,7 @@
       "rank": 1,
       "address": "0:D887D0E2D1C4FC4126E71C970D33AB1896940000EAE703BB1AB6CECC830777E3",
       "balance": "115510093390000000",
-      "balance_change_24h": "-235296660000000"
+      "balance_change_24h": "-270296660000000"
     },
     {
       "rank": 2,
@@ -131,8 +131,8 @@
     {
       "rank": 4,
       "address": "0:779DCC815138D9500E449C5291E7F12738C23D575B5310000F6A253BD607384E",
-      "balance": "48926249290000000",
-      "balance_change_24h": "-606546010000000"
+      "balance": "48966767820000000",
+      "balance_change_24h": "-545027400000000"
     },
     {
       "rank": 5,
@@ -744,7 +744,7 @@
       "rank": 106,
       "address": "0:A9BC094E3B3A9C23F354C7007476AC3FCDDD12AF6AED4B4168337E47692C5323",
       "balance": "4178142190000000",
-      "balance_change_24h": "75676080000000"
+      "balance_change_24h": "70863960000000"
     },
     {
       "rank": 107,
@@ -1900,45 +1900,45 @@
     },
     {
       "rank": 299,
-      "address": "0:741A744C33B4488AC4428248422BB32761A66E6D9BFAE19BD56BB8E033A65450",
-      "balance": "1313579490000000",
-      "balance_change_24h": "-177877560000000"
-    },
-    {
-      "rank": 300,
       "address": "0:BC178A9694E95D8FB1C25349D06C843F7B0F8DF33061D72C5958F7098F8352C6",
       "balance": "1311614260000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 301,
+      "rank": 300,
       "address": "0:BC27B73B2B7BBD75CDBBCD9B2F62A48DA550429FFBFE26F9A0A3DB86A3893F6B",
       "balance": "1294613580000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 302,
+      "rank": 301,
       "address": "0:C7013C58F7D85254FEC0B787F03AE5FAF23B3D320CF0A773C5EFA367E40CBD55",
       "balance": "1293880660000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 303,
+      "rank": 302,
       "address": "0:274D542DF520F62C32BBB109BF4FFA23DAC3FAEE791DABCF15FED8E87BE4BC39",
       "balance": "1289204210000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 304,
+      "rank": 303,
       "address": "0:4CE37F4CFD8ECABDF089717F88C33ED47EFD99667904E43078DC0734065794B0",
       "balance": "1285086130000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 305,
+      "rank": 304,
       "address": "0:9E7940C831A6B83CB3B6536591A872583D2335380F60E76D8DA81BF831B77909",
       "balance": "1280068080000000",
       "balance_change_24h": "0"
+    },
+    {
+      "rank": 305,
+      "address": "0:741A744C33B4488AC4428248422BB32761A66E6D9BFAE19BD56BB8E033A65450",
+      "balance": "1271639490000000",
+      "balance_change_24h": "-184817560000000"
     },
     {
       "rank": 306,
@@ -8760,7 +8760,7 @@
       "rank": 1442,
       "address": "0:B5BEEED206C99DA3E67F78983D2FDC38F52B308E5C0C0DACA0E85B0354DEF821",
       "balance": "120580420000000",
-      "balance_change_24h": "20080380000000"
+      "balance_change_24h": "0"
     },
     {
       "rank": 1443,
@@ -9432,7 +9432,7 @@
       "rank": 1554,
       "address": "0:4747F797F3CF81F80197F987CA89250CD791D419DC1B7EB22A7B0A2080DE56E2",
       "balance": "107713380000000",
-      "balance_change_24h": "-81750500000000"
+      "balance_change_24h": "-56410970000000"
     },
     {
       "rank": 1555,
@@ -18390,7 +18390,7 @@
       "rank": 3047,
       "address": "0:224073DC87D1100361226D9A1CCEAA89D1B8249BD9B9B22C6013B35D2170FB4B",
       "balance": "38775130000000",
-      "balance_change_24h": "58570000000"
+      "balance_change_24h": "38450000000"
     },
     {
       "rank": 3048,
@@ -19714,93 +19714,93 @@
     },
     {
       "rank": 3268,
+      "address": "0:D49106E94D5220B7BBFAEBE253151FB7F9E5D1173FF857AE85F947E7EAF3A0D0",
+      "balance": "34339860000000",
+      "balance_change_24h": "2078080000000"
+    },
+    {
+      "rank": 3269,
       "address": "0:9DE2BD3D901F6DEA60DF22961707F64C2CBCD14BDC25B9A74940A797D3395373",
       "balance": "34336580000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3269,
+      "rank": 3270,
       "address": "0:D25959B71C0EBD605C60D17A02FEFD1CE2D4D7C3D8C907996502C5C131BC39B9",
       "balance": "34333830000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3270,
+      "rank": 3271,
       "address": "0:80C935A010D6418CF4B396551EF950F52BE72C6648B78B0E50542649B0AAC39A",
       "balance": "34308990000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3271,
+      "rank": 3272,
       "address": "0:470B2C746A84132132D9F972B6D729E22F22BE1E0C1C90B25F62CD1454A53528",
       "balance": "34260000000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3272,
+      "rank": 3273,
       "address": "0:64D603C5B4DC1C012150AD1F8983A44D0421EA6DAC35F4519A24358A129BF36B",
       "balance": "34230610000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3273,
+      "rank": 3274,
       "address": "0:66EE64255AEE947588C471F0DC0707EEB56F529548CFFAB597CBDD7277EDB423",
       "balance": "34225410000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3274,
+      "rank": 3275,
       "address": "0:AFB1D4788BDCCF684DA83EC8CDD9443D9F1E058F266B721C93B5098C39B603B8",
       "balance": "34200000000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3275,
+      "rank": 3276,
       "address": "0:2E0E4A29EC8FE878C91E6424A14CEE5039B11F30B12453B2FDB79D2DDBED66E6",
       "balance": "34178820000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3276,
+      "rank": 3277,
       "address": "0:007D5D362EECF2FA3CC646B1ADB9A2519E79A95D0340582430F1E4DD38FB537E",
       "balance": "34150950000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3277,
+      "rank": 3278,
       "address": "0:EED9A6D2A68AA8C35F372A404E8D9FD3FB77EBC382EA0DB758A09E1B1CFAB792",
       "balance": "34111200000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3278,
+      "rank": 3279,
       "address": "0:686584012F57FF11747042A49CB2FD9AE81C628F30026E1367169D0B73A84154",
       "balance": "34092750000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3279,
+      "rank": 3280,
       "address": "0:3C6832A9D07A972C19AC1D382E79283B24A293B8A1E0E5C5509592B1D3FE0A87",
       "balance": "34071860000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3280,
+      "rank": 3281,
       "address": "0:58C996021095037D32BAB448D7D9AE850F6E5FFA19AD06D8A64B6A0D99E8AD34",
       "balance": "34044510000000",
       "balance_change_24h": "0"
     },
     {
-      "rank": 3281,
+      "rank": 3282,
       "address": "0:DE3E683D6BFCF300343DBC7391C5C63B9CD4D0C4F2A7D2A27BC3451AB480E0A9",
       "balance": "34029800000000",
       "balance_change_24h": "0"
-    },
-    {
-      "rank": 3282,
-      "address": "0:D49106E94D5220B7BBFAEBE253151FB7F9E5D1173FF857AE85F947E7EAF3A0D0",
-      "balance": "33989860000000",
-      "balance_change_24h": "1728080000000"
     },
     {
       "rank": 3283,
@@ -23172,7 +23172,7 @@
       "rank": 3844,
       "address": "0:721FB4BB7A143FDD13FA08C248A37AAE0CD99B3621FE985F318EBF71A78909AE",
       "balance": "26239120000000",
-      "balance_change_24h": "26239120000000"
+      "balance_change_24h": "0"
     },
     {
       "rank": 3845,
@@ -24810,7 +24810,7 @@
       "rank": 4117,
       "address": "0:1FE46D8791161E510F4B4A1AECCC30B6AE6429D833A92FA3FFD56611C46A8EC7",
       "balance": "23268960000000",
-      "balance_change_24h": "-251090000000000"
+      "balance_change_24h": "-251010000000000"
     },
     {
       "rank": 4118,
